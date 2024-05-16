@@ -4,7 +4,6 @@ class pluginChangeMapHash{
   constructor () {}
   apply (compiler) {
     compiler.hooks.emit.tap('pluginChangeMapHash', (compilation) => {
-      // console.log('++++' ,compilation.assets)
       const assets = compilation.assets
       Object.entries(assets).forEach(([filePath, code]) => {
         if (isMapFile(filePath)) {
@@ -14,9 +13,9 @@ class pluginChangeMapHash{
           delete assets[filePath]
         }
       })
-      Object.entries(assets).forEach(([filePath, code]) => {
-        console.log('ddd', filePath)
-      })
+      // Object.entries(assets).forEach(([filePath, code]) => {
+      //   console.log('filePath:', filePath)
+      // })
     })
   }
 }
@@ -44,13 +43,13 @@ function getNewFilePath (filePath, sep = '/') {
 function changeHash (hash) {
   if (!hash) return ''
   const reverseStr = hash.split('').reverse()
-  const array = []
+  let newHash = ''
   reverseStr.forEach(str => {
     const unicode = str.charCodeAt(0)
     const str16 = (unicode+1).toString(16)
-    array.push(str16)
+    newHash += str16
   })
-  return array.join('')
+  return newHash
 }
 
 module.exports = pluginChangeMapHash
