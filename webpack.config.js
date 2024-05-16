@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const pluginChangeMapHash = require('./src/plugins/plugin-change-map-hash')
 const CreateFileInfo = require('./src/plugins/plugin-create-file-info')
 
 const config = {
@@ -35,7 +36,8 @@ const config = {
       template: path.resolve(__dirname, './src/html/index.html')
     }),
     new CleanWebpackPlugin(),
-    new CreateFileInfo()
+    new pluginChangeMapHash(),
+    new CreateFileInfo(),
   ]
 }
 
