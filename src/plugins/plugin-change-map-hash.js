@@ -1,13 +1,15 @@
 const path = require('path')
 
 class pluginChangeMapHash{
-  constructor () {}
+  constructor ({ changeFileHash = null }) {
+    this.customGetFileHash = changeFileHash
+  }
   apply (compiler) {
     compiler.hooks.emit.tap('pluginChangeMapHash', (compilation) => {
       const assets = compilation.assets
       Object.entries(assets).forEach(([filePath, code]) => {
         if (isMapFile(filePath)) {
-          const newFilePath = getNewFilePath(filePath, path.sep)
+          const newFilePath = getNewFilePath.call(this, filePath, path.sep)
           if (!newFilePath) return
           assets[newFilePath] = code
           delete assets[filePath]
@@ -26,6 +28,11 @@ function isMapFile (filePath) {
 }
 
 function getNewFilePath (filePath, sep = '/') {
+  if (this.customChangeFileHash && typeof this.customChangeFileHash === 'function') {
+    const newFileName = this.customChangeFileHash(filePath, changeHash)
+    return newFileName
+  }
+  // 默认支持[name].[hash].js.map格式
   const array = filePath.split(sep)
   const nameSplitArray = array[array.length - 1].split('.')
   if (nameSplitArray.length >= 3) {
