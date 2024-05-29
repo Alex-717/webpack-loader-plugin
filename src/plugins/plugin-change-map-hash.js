@@ -7,15 +7,15 @@ class pluginChangeMapHash{
   apply (compiler) {
     compiler.hooks.emit.tap('pluginChangeMapHash', (compilation) => {
       const assets = compilation.assets
-      Object.entries(assets).forEach(([filePath, code]) => {
+      Object.entries(assets).forEach(([filePath, rawSource]) => {
         if (isMapFile(filePath)) {
           const newFilePath = getNewFilePath.call(this, filePath, path.sep)
           if (!newFilePath) return
-          assets[newFilePath] = code
+          assets[newFilePath] = rawSource
           delete assets[filePath]
         }
       })
-      // Object.entries(assets).forEach(([filePath, code]) => {
+      // Object.entries(assets).forEach(([filePath, rawSource]) => {
       //   console.log('filePath:', filePath)
       // })
     })
